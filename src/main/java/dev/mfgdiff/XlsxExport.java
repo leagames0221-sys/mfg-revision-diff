@@ -247,5 +247,19 @@ public final class XlsxExport {
         text(sh.createRow(i++).createCell(0), "入れ替えは「同じ」「変更」と重なる (順番だけが違う工程)。", st, null, false);
         i++;
         text(sh.createRow(i++).createCell(0), "色: 薄い黄色の行 = 変更あり、黄色のセル = 変わった欄、薄い緑 = 追加、薄い赤 = 削除、薄い青 = 入れ替えのみ。", st, null, false);
+        if (!r.a().warnings.isEmpty() || !r.b().warnings.isEmpty()) {
+            i++;
+            text(sh.createRow(i++).createCell(0), "比べていない要素 (ここに違いがあっても工程・部品のシートには出ません)", st, null, true);
+            for (String w : r.a().warnings) {
+                org.apache.poi.ss.usermodel.Row x = sh.createRow(i++);
+                text(x.createCell(0), "版 A", st, null, false);
+                text(x.createCell(1), w.replaceFirst("^not compared: ", ""), st, null, false);
+            }
+            for (String w : r.b().warnings) {
+                org.apache.poi.ss.usermodel.Row x = sh.createRow(i++);
+                text(x.createCell(0), "版 B", st, null, false);
+                text(x.createCell(1), w.replaceFirst("^not compared: ", ""), st, null, false);
+            }
+        }
     }
 }

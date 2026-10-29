@@ -13,7 +13,7 @@ Facts that shape the choice:
 - **The screen is local.** It reads files from the person's disk and shows them back; it needs no accounts, no database and no network access from other machines. It should listen on 127.0.0.1 only (S11.4).
 - **One new library is already needed** for Excel (ADR 0004). The fewer further libraries, the smaller the part of the dependency check (README) that the project has to keep clean.
 - **The pages are few**: an upload form, a result page, a file download, two static files.
-- **The tool must start with what a Java 17 installation and the local Maven repository provide**, so that it runs from `target/classes` with a short script (`scripts/run.ps1`, `scripts/run.sh`, D26) even where no packaging plugin is installed.
+- **The tool must start with what a Java 17 installation and the local Maven repository provide**, so that it runs from `target/classes` with a short script (`scripts/run.ps1`, `scripts/run.sh`, D26), without a plugin that bundles the libraries into one jar.
 - The JDK ships `com.sun.net.httpserver.HttpServer`: "This class implements a simple HTTP server." (S11.4b). It is bound to an address and a port; a request for which no handler is found is answered with 404 (S11.4b).
 
 ## Decision
@@ -32,7 +32,7 @@ We will use `com.sun.net.httpserver.HttpServer` from the JDK, bound to the loopb
 | candidate | what it is | why not |
 |---|---|---|
 | **Jakarta Servlet with a servlet container** | "Jakarta Servlet defines a server-side API for handling HTTP requests and responses." (S11.11). It is an API; a container (Tomcat, Jetty or another) has to be added to run it. | A container and its dependencies would be new libraries for five pages. Not tried here (sources.md N11). |
-| **Spring Boot** | "For servlet application, Spring Boot includes support for embedded Tomcat and Jetty servers." (S11.11b) | The same container plus the Spring libraries and a build plugin that packages the application; the task allows one new library (POI). The benefit (dependency injection, templates, security filters) is not needed for five pages. Not tried here (N11). |
+| **Spring Boot** | "For servlet application, Spring Boot includes support for embedded Tomcat and Jetty servers." (S11.11b) | The same container plus the Spring libraries and a build plugin that packages the application; the project keeps to one runtime library (POI). The benefit (dependency injection, templates, security filters) is not needed for five pages. Not tried here (N11). |
 | **Command-line tool and Excel file only** | what ADR 0001 / `Cli` already offer | No filters, no previous / next, no colour; the people who read a process-plan comparison work in a browser or in Excel. The command line stays as it was. |
 | **JDK HttpServer** | S11.4b | **Chosen.** No new library; loopback binding is one argument; the whole server is one class of about 300 lines. |
 

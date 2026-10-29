@@ -31,14 +31,14 @@ What is different here:
 - Matching: the structure of [xmldiff](https://github.com/Shoobx/xmldiff) (MIT) written again in Java (unique key, similarity threshold, longest common subsequence for moves), with a port of Python's `difflib` ratio (PSF); `NOTICE` lists the sources.
 - Screen: the JDK's `com.sun.net.httpserver` on 127.0.0.1 (`docs/adr/0003-screen-base-jdk-httpserver.md`).
 - Excel: Apache POI 5.5.1 (`poi-ooxml`), with `log4j-api` pinned to 2.25.5 (`docs/adr/0004-excel-export-poi.md`). No other runtime library.
-- Tests: JUnit 5.10.2. 99 tests.
+- Tests: JUnit 5.10.2. 101 tests.
 
 ## Run it
 
 Needs a JDK 17 or later and Maven 3.9.
 
 ```
-mvn test                  # compiles, runs the 99 tests; the first run downloads POI into ~/.m2
+mvn test                  # compiles, runs the 101 tests; the first run downloads POI into ~/.m2
 scripts/run.ps1           # Windows PowerShell   (optional: -Port 8081)
 scripts/run.sh            # Linux, macOS, Git Bash   (optional: ./scripts/run.sh 8081)
 ```
@@ -72,7 +72,7 @@ java -cp target/classes dev.mfgdiff.Cli examples/revA.xml examples/revB.xml [--f
 
 ## Why it was built, how, and what came out
 
-**Why.** A revised process plan is usually checked by eye, line against line. The paid products show a compare view, but they cost money and are tied to their own data; the free tools that exist compare part lists by part number and do not treat the order of steps as a change. I wanted a free tool that answers "which step is which?" when numbers, names and order all changed between revisions.
+**Why.** Without a compare function, two revisions are compared by opening both and reading them side by side; SAP's own support page on BOM comparison calls that "opening up the BOM’s in two different sessions would be cumbersome" (`docs/sources.md` S4.8). The paid products show a compare view, but they cost money and are tied to their own data; the free tools that exist compare part lists by part number and do not treat the order of steps as a change. I wanted a free tool that answers "which step is which?" when numbers, names and order all changed between revisions.
 
 **How.** The data shape is B2MML, an open XML format with schemas for process segments and material bills (ADR 0002). The pairing of rows is the hard part: a key alone fails when IDs are reused or renumbered, text similarity alone fails on near-identical steps, a tree edit distance has no "move". The tool pairs by a unique key first, then by similarity combined with the share of matched bill rows, then finds moved steps with a longest common subsequence (ADR 0001, six candidates compared). No public sample has two revisions of one plan, so a change generator makes the second revision from the first and records the truth, and the tool is scored against it per category (precision and recall, `docs/validation/`). Failures of other tools became tests: duplicate part rows, reordered rows, duplicate step IDs. The screen and the Excel file are described in ADR 0003 to 0005.
 
@@ -81,7 +81,7 @@ java -cp target/classes dev.mfgdiff.Cli examples/revA.xml examples/revB.xml [--f
 - With 5 % of the nodes changed, all 20 held-out runs reproduced the applied changes exactly in every category (127 operations). At 10 % and 20 %, 19 of 20 runs were exact (257 and 513 operations).
 - Over all held-out runs there were 4 segment-level errors with the chosen setting (similarity threshold F = 0.7) against 88 with xmldiff's own default of 0.5.
 - The remaining differences are listed in `results.md`: for example, a removed step and an added step that look alike are paired as one changed step in one run (10 %, seed 37).
-- 99 tests pass. Breaking the code on purpose in nine places (six in the matching, `docs/validation/mutation-check.md`; the output encoding, the origin check and the Excel colour) made the tests fail each time.
+- 101 tests pass. Breaking the code on purpose in nine places (six in the matching, `docs/validation/mutation-check.md`; the output encoding, the origin check and the Excel colour) made the tests fail each time.
 - The numbers come from generated data and a generator written for this project, so they describe the matching on that kind of change.
 
 ## Out of scope
@@ -91,7 +91,21 @@ java -cp target/classes dev.mfgdiff.Cli examples/revA.xml examples/revB.xml [--f
 | Nested steps (a step inside a step) | The tool compares the flat list of `OperationsSegment` and lists any nested element as a warning; comparing trees of steps needs a second matching level (`docs/sources.md` D5). |
 | Multi-level bills (a bill item that has its own bill) | The tool compares one bill level per step and reads the part number from `MaterialSpecificationID`; deeper levels are listed as a warning (D1, D5). |
 | Dependencies between steps (`SegmentDependency`) | The tool orders steps by their `Indice` parameter or by document order and lists the dependencies as a warning (D3, D5). |
-| Real plant exports | The tool reads the part number from `MaterialSpecificationID` and the step position from `Indice`; an export that keeps them elsewhere needs a reader for that place (ADR 0002, Consequences). |
+| Formats other than B2MML (a PLM's or ERP's own export) | The tool reads B2MML only; another format needs a converter to B2MML or a second reader that fills the same model (`Definition`, `Node`). |
+
+## Fitting it to another plant's data
+
+What differs from one plant's B2MML export to the next, and where the tool decides it:
+
+| what can differ | where it is set | default |
+|---|---|---|
+| The element that holds the part number of a bill row | `Node.key()` (`Node.java` L51-L53) and `B2mmlReader.ITEM_SIMPLE` (`B2mmlReader.java` L31-L32), D1 | `MaterialSpecificationID` |
+| Where the position of a step is kept | `B2mmlReader.ORDER_PARAMETER` (L26, D3); without it, document order | `Indice` |
+| Which fields count as a change | `B2mmlReader.SEG_SIMPLE` and `ITEM_SIMPLE` (L28-L32, D4); every other element is listed under 比べていない要素 on the screen and on the まとめ sheet | 12 step fields and the step's parameters; 7 bill-row fields and the quantity |
+| How different a step may become and still be the same step | `--f` and `--ratio` on the command line; `NodeMatcher.DEFAULT_F` and `DEFAULT_MODE` (`NodeMatcher.java` L23-L24) for the screen | F = 0.7, fast |
+| Largest input file | `SecureXml.MAX_BYTES`, `MAX_DEPTH`, `MAX_ELEMENTS` (`SecureXml.java` L31-L35, D11) | 8 MiB, depth 64, 200,000 elements |
+
+The threshold is the setting most likely to need a change: it was chosen on invented step names (ADR 0001, Consequences). `ChangeGenerator.generate` takes any `Definition` as the first revision, so the measurement of `EvalMain` (which uses `SampleData.base`, `EvalMain.java` L57-L58) can be repeated on a plant's own revision read with `B2mmlReader`.
 
 ## FAQ
 
@@ -103,7 +117,7 @@ java -cp target/classes dev.mfgdiff.Cli examples/revA.xml examples/revB.xml [--f
 
 ## How it was checked
 
-- `mvn -o test`: 99 tests (64 for the data shape, the matching, the generator and the readers; 35 for the screen, the Excel file and the scripts).
+- `mvn -o test`: 101 tests (64 for the data shape, the matching, the generator and the readers; 37 for the screen, the Excel file and the scripts).
 - The screen was started with `scripts/run.ps1` and with `scripts/run.sh` and driven in Microsoft Edge: the sample gives the five categories, each of the seven filters shows its rows (38, 11, 4, 5, 2, 27, 1), **次の差異** and **前の差異** move through the 11 differences, the Excel download opens and reads back with POI (3 sheets, no formula cell). The browser reported no console error.
 - The Excel file was read back with Apache POI.
 - Dependencies: OSV reports no vulnerability for `poi-ooxml` 5.5.1 and its 12 compile dependencies with `log4j-api` at 2.25.5; it reports GHSA-qv9r-c865-cp47 for the 2.24.3 that POI would bring (`docs/sources.md` S11.13, S11.13b). It reports none for the 8 test-side libraries (JUnit 5.10.2, what JUnit needs, the Surefire JUnit provider) and the 3 Maven plugins of the pom (S11.13c).

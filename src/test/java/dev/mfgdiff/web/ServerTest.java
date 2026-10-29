@@ -2,6 +2,7 @@ package dev.mfgdiff.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.mfgdiff.B2mmlWriter;
@@ -152,6 +153,21 @@ class ServerTest {
         assertTrue(html.contains("<td class=\"chg\">Duration: PT6M → PT7M</td>"));
         assertTrue(html.contains("<td class=\"chg\">OP-120</td><td class=\"chg\">OP-130</td>"));
         assertTrue(html.contains("src=\"/app.js\"") && html.contains("id=\"prev\"") && html.contains("id=\"next\""));
+        assertFalse(html.contains("class=\"warn\""), "the samples contain only compared elements");
+    }
+
+    @Test
+    void elementsThatAreNotComparedAreListedOnTheResultPage() throws Exception {
+        String a = xml(defWithDescription("Cut plate"));
+        String b = a.replaceFirst("<Description>Cut plate</Description>",
+                "<Description>Cut plate</Description><HierarchyScope><EquipmentID>E-1</EquipmentID></HierarchyScope>");
+        assertNotEquals(a, b, "the extra element was inserted");
+        HttpResponse<String> r = text(post(multipart(new String[][] {{"fileA", "a.xml", a}, {"fileB", "b.xml", b}}), "Origin", base).build());
+        assertEquals(303, r.statusCode());
+        String html = get(r.headers().firstValue("Location").orElseThrow());
+        assertTrue(html.contains("class=\"warn\"") && html.contains("比べていない要素"), "the note is shown");
+        assertTrue(html.contains("<li>B: OperationsSegment/HierarchyScope</li>"), html);
+        assertFalse(html.contains("<li>A: "), "revision A has no such element");
     }
 
     @Test

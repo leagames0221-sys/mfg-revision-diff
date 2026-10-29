@@ -150,7 +150,36 @@ class XlsxExportTest {
             assertEquals(2, (int) changed.getCell(3).getNumericCellValue());
             assertEquals(1, (int) rowWith(s, 0, "入れ替え").getCell(2).getNumericCellValue());
             assertEquals("revA.xml", rowWith(s, 0, "版 A").getCell(1).getStringCellValue());
+            assertEquals(1, rowsWith(s, 0, "版 A"), "the samples have no element that is not compared");
         }
+    }
+
+    @Test
+    void elementsThatAreNotComparedAreListedOnTheSummarySheet() throws Exception {
+        String a = B2mmlWriter.write(B2mmlReader.read(Path.of("examples/revA.xml")), java.util.List.of());
+        String b = a.replaceFirst("<Duration>PT3M</Duration>",
+                "<Duration>PT3M</Duration><HierarchyScope><EquipmentID>E-1</EquipmentID></HierarchyScope>");
+        assertNotEquals(a, b, "the extra element was inserted");
+        DiffResult r = Differ.diff(B2mmlReader.read(a.getBytes(java.nio.charset.StandardCharsets.UTF_8)),
+                B2mmlReader.read(b.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        try (XSSFWorkbook wb = open(XlsxExport.write(r, "a.xml", "b.xml", 0.7, RatioMode.FAST))) {
+            Sheet s = wb.getSheet("まとめ");
+            assertEquals(2, rowsWith(s, 0, "版 B"), "the file row and one warning row");
+            assertEquals(1, rowsWith(s, 0, "版 A"));
+            rowWith(s, 1, "OperationsSegment/HierarchyScope");
+        }
+    }
+
+    private static int rowsWith(Sheet sh, int col, String text) {
+        int n = 0;
+        for (int i = 0; i <= sh.getLastRowNum(); i++) {
+            Row row = sh.getRow(i);
+            Cell c = row == null ? null : row.getCell(col);
+            if (c != null && c.getCellType() == CellType.STRING && c.getStringCellValue().equals(text)) {
+                n++;
+            }
+        }
+        return n;
     }
 
     // ------------------------------------------------------------ text that looks like a formula

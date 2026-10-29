@@ -70,6 +70,8 @@ a { color: var(--accent); }
 .pick label { display: grid; gap: 4px; }
 .sample { margin-top: 8px; }
 .err { color: #a12b2b; }
+.warn { margin: 6px 0; padding: 4px 10px; border-left: 4px solid #b7791f; background: #fdf6e3; }
+.warn ul { margin: 2px 0; padding-left: 20px; }
 
 table { border-collapse: collapse; width: 100%; }
 th, td { border: 1px solid var(--line); padding: 3px 8px; text-align: left; vertical-align: top; }

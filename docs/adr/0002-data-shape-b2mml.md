@@ -36,7 +36,7 @@ The acknowledgement sentence "The Business To Manufacturing Markup Language (B2M
 | **STEP (ISO 10303), for example AP 240 process plans or AP 242** | "ISO10303 is not free"; AP 240 is "Process plans for machined products" (S1.10) | Paid text; AP 240 is about machined parts, not assembly-line plans. AP 242 ("Managed model based 3D engineering", S1.10) is a product-model standard; it was not read further. |
 | **PLCS (STEP AP 239)** | AP 239 is "Product life cycle support" (S1.10); the OASIS technical committee was closed on 17 April 2017 (S1.11) | No maintained public body behind it. |
 | **IPC-2581** | "a generic standard for printed circuit board" (S1.12) | Circuit boards only. |
-| **CycloneDX (MBOM, formulation)** | has a field that "Describes how a component or service was manufactured or deployed." (S1.13) | Its reference key is only unique inside one document (S1.13) and its manufacturing vocabulary looked thin to the author (an impression, not verified). |
+| **CycloneDX (MBOM, formulation)** | has a field that "Describes how a component or service was manufactured or deployed." (S1.13) | Its reference key is only unique inside one document (S1.13), so it is not a key that holds across two revisions. |
 | **B2MML JSON form** | the README says "There has been no checking of this file." (S1.15) | Unchecked. |
 | **B2MML XML** | S1.1 to S1.8 | **Chosen.** |
 

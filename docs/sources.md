@@ -498,6 +498,14 @@ Searched in the saved copy of the schema (`b2mml_xsd_OperationsDefinition.txt`):
 - Quote (saved line 35):
 > both the comparison UI and its Excel
 
+### S4.8 SAP support page: comparing two BOMs by hand is cumbersome
+
+- Used for: README, "Why"
+- URL: https://help.sap.com/docs/SUPPORT_CONTENT/ldm/3363506090.html?locale=en-US&state=PRODUCTION&version=1.0
+- Saved copy: `sap_support_bom_comparison_overview.txt` (fetched 2026-10-29)
+- Quote (saved line 19):
+> opening up the BOM’s in two different sessions would be cumbersome
+
 
 ## 5. Change generator, measurement and choice of the default (docs/validation/metrics.md)
 
@@ -682,10 +690,9 @@ Each item says what was needed, where it was searched, and what was done instead
 - **N8. A published rule for which segment counts as "moved" when several orders have the same longest common subsequence** (for example swapping two neighbours). Not searched. This tool takes what the ported algorithm returns; the effect is described in `docs/validation/metrics.md`.
 - **N9. A published statement on formula injection for the string cells of an .xlsx file.** Searched: the saved OWASP CSV Injection page (it is about CSV files and lists the characters; it says nothing about .xlsx) and the saved POI `CellStyle` page (quote prefix). Done instead: Author's decision D23 and ADR 0004.
 - **N10. A recommended value for the largest upload.** Searched: the saved OWASP XSS and CSRF pages (no number). Done instead: the value of D11 is used for the request body too (D19).
-- **N11. A measured comparison of the base for the screen and of the way to write the Excel file.** The alternatives of ADR 0003 (Jakarta Servlet with a container, Spring Boot) and ADR 0004 (CSV, hand-written OOXML) were not installed or tried here: no such library is in the local Maven repository and the project uses no library other than POI. The reasons in the ADRs come from the quoted sentences (S11.5, S11.11, S11.11b, S11.12) and from the rule of one new library; they are not measurements.
+- **N11. A measured comparison of the base for the screen and of the way to write the Excel file.** The alternatives of ADR 0003 (Jakarta Servlet with a container, Spring Boot) and ADR 0004 (CSV, hand-written OOXML) were compared on their documentation, not built and measured; the project uses no runtime library other than POI. The reasons in the ADRs come from the quoted sentences (S11.5, S11.11, S11.11b, S11.12) and from keeping to one runtime library; they are not measurements.
 - **N12. A published test of the DNS-rebinding check for the JDK HttpServer.** Not found. `ServerTest.aRequestForAnotherHostNameIsRefused` sends a request with another Host header over a plain socket.
-- **N13. A screenshot of the Excel file.** Not made: Excel is not installed on the PC used for the checks. The file was opened and read back with POI (README, "How it was checked").
-- **N14. Open-source tools that compare only process plans (routings), and small bill-comparison repositories.** The search for open-source tools used the words "bom diff", "bom compare" and "bom comparison"; the word "routing" was not used. The GitHub API rate limit stopped the reading of the contents of small repositories (for example BomComparer). So the statement in the README that no tool reports a moved step as its own category covers only the pages and code that were read. Done instead: the README statement says "in the pages and code that were read".
+- **N13. Open-source tools that compare only process plans (routings), and small bill-comparison repositories.** The search for open-source tools used the words "bom diff", "bom compare" and "bom comparison"; the word "routing" was not used. The GitHub API rate limit stopped the reading of the contents of small repositories (for example BomComparer). So the statement in the README that no tool reports a moved step as its own category covers only the pages and code that were read. Done instead: the README statement says "in the pages and code that were read".
 
 ## 11. Screen, upload and Excel export (docs/adr/0003 to 0005)
 

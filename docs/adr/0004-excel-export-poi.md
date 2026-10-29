@@ -43,6 +43,6 @@ We will write the file with POI's `XSSFWorkbook` (`XlsxExport.java` L129 `write`
 - Positive: the dependency check of the repository reports nothing for the 13 libraries (S11.13b). The pin has to be kept until POI's own pom moves past 2.24.3.
 - Negative: 13 jars (poi-ooxml, poi, commons-codec, commons-math3, SparseBitSet, poi-ooxml-lite, xmlbeans, commons-compress, commons-lang3, commons-io, curvesapi, log4j-api, commons-collections4) instead of none. Their licences are listed in `NOTICE`.
 - Negative: the quote-prefix mark and string cells protect the file as written. If a person saves the sheet as CSV from Excel, the text is written without protection; that is outside this tool (the OWASP page says the CSV mitigations are not reliable in Excel, S11.5).
-- Negative: the effect of a string cell and of the quote-prefix mark on every spreadsheet program is not tested; only Excel is described by the sources, and Excel is not installed on the PC where the file was checked (N13). The file was read back with POI.
+- Negative: the effect of a string cell and of the quote-prefix mark on every spreadsheet program is not tested; only Excel is described by the sources. The tests read the file back with POI.
 - Negative: the Simple Logger prints Log4j's own errors (level ERROR) to the console; there is no log file. POI logs little during a write.
 - Negative: text over 32767 characters in one cell is cut (D21); in the tests of this project no input is that long.

@@ -71,6 +71,17 @@ final class Pages {
         sb.append("<p class=\"legend\"><span class=\"sym\">=</span> 同じ　<span class=\"sym\">≠</span> 変更　"
                 + "<span class=\"sym\">A</span> 削除 (A のみ)　<span class=\"sym\">B</span> 追加 (B のみ)　"
                 + "<span class=\"sym\">↕</span> 入れ替え</p>\n");
+        if (!r.a().warnings.isEmpty() || !r.b().warnings.isEmpty()) {
+            // Elements the reader does not compare (B2mmlReader.warn); without this list a difference in them would be silent.
+            sb.append("<div class=\"warn\" role=\"note\"><b>比べていない要素</b> (ここに違いがあっても一覧には出ません)<ul>");
+            for (String w : r.a().warnings) {
+                sb.append("<li>A: ").append(esc(w.replaceFirst("^not compared: ", ""))).append("</li>");
+            }
+            for (String w : r.b().warnings) {
+                sb.append("<li>B: ").append(esc(w.replaceFirst("^not compared: ", ""))).append("</li>");
+            }
+            sb.append("</ul></div>\n");
+        }
         sb.append("<nav class=\"filters\" aria-label=\"絞り込み\">");
         for (Object[] f : FILTERS) {
             Filter ff = (Filter) f[0];

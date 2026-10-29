@@ -28,7 +28,7 @@ We will apply six protections, each in one place with its own tests.
 5. **Read XML only with `SecureXml`.** `Server.compare` calls `SecureXml.parse` (`Server.java` L248-L249), the XML reader that refuses DOCTYPE and has external access off, then `B2mmlReader.fromDocument`. Test: `ServerTest.aDoctypeIsRefused` (an external entity that points to a file of the PC is refused with 400 and nothing of the file is in the answer).
 6. **Send a policy with every response.** `Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`, `X-Content-Type-Options: nosniff`, `Cache-Control: no-store` (`Server.java` L42 and L286-L289, D22). OWASP calls a CSP "an additional layer of defense" and not the primary defence (S11.1); the primary defence is item 1. Test: `ServerTest.theUploadPageIsServedWithAPolicyThatForbidsInlineScripts`.
 
-The multipart body is read by `Multipart.parse` (`Multipart.java` L32) following RFC 7578 and RFC 2046 (S11.3, S11.3b); it refuses a body without a boundary, with a part that is not closed, a part without a name, more than 8 parts or a header block over 4096 bytes (D19). Tests: `SmallPartsTest` (the four `Multipart` tests).
+The multipart body is read by `Multipart.parse` (`Multipart.java` L32) following RFC 7578 and RFC 2046 (S11.3, S11.3b); it refuses a body without a boundary, with a part that is not closed, a part without a name, more than 8 parts or a header block over 4096 bytes (D19). Tests: `SmallPartsTest` (the five `Multipart` tests).
 
 ## Alternatives considered
 
