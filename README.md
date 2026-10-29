@@ -39,11 +39,11 @@ Needs a JDK 17 or later and Maven 3.9.
 
 ```
 mvn test                  # compiles, runs the 101 tests; the first run downloads POI into ~/.m2
-scripts/run.ps1           # Windows PowerShell   (optional: -Port 8081)
+powershell -ExecutionPolicy Bypass -File scripts\run.ps1   # Windows   (optional: -Port 8081)
 scripts/run.sh            # Linux, macOS, Git Bash   (optional: ./scripts/run.sh 8081)
 ```
 
-Then open <http://127.0.0.1:8080/>. Press **見本で試す** to compare the sample revisions, or choose two B2MML files. Stop the server with Ctrl+C. Offline, use `mvn -o test`.
+On Windows the script is started with `-ExecutionPolicy Bypass` because the default policy of Windows client computers, Restricted, "doesn't allow scripts"; the parameter applies to that one PowerShell process only and changes no setting (`docs/sources.md` S11.14). Then open <http://127.0.0.1:8080/>. Press **見本で試す** to compare the sample revisions, or choose two B2MML files. Stop the server with Ctrl+C. Offline, use `mvn -o test`.
 
 The scripts start the compiled classes (`target/classes`) with a class path made from the 13 jars in `~/.m2` (listed at the top of each script); no plugin that bundles the libraries into one jar is part of the build. `ProjectFilesTest` checks that the scripts and the pom agree.
 

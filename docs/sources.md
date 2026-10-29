@@ -1009,3 +1009,19 @@ Every quote below is a substring of one line of its saved copy; the checks are l
 > org.apache.maven.surefire:surefire-junit-platform 3.2.5 -> 0 vulnerabilities []
 - Quote (saved line 27):
 > TOTAL 24 libraries, 0 vulnerabilities
+
+### S11.14 Microsoft: execution policies of Windows PowerShell 5.1
+
+- Used for: README, "Run it" (`powershell -ExecutionPolicy Bypass -File scripts\run.ps1`)
+- URL: https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-5.1 (saved from the source file https://raw.githubusercontent.com/MicrosoftDocs/PowerShell-Docs/main/reference/5.1/Microsoft.PowerShell.Core/About/about_Execution_Policies.md)
+- Saved copy: `ms_about_execution_policies_51.txt` (fetched 2026-10-30)
+- Quote (saved line 85):
+> The default execution policy for Windows client computers.
+- Quote (saved line 86):
+> Permits individual commands, but doesn't allow scripts.
+- Quote (saved line 256):
+> The policy affects only the
+- Quote (saved line 257):
+> current session and child sessions.
+- Quote (saved line 270):
+> The execution policy that you set isn't stored in the registry.
