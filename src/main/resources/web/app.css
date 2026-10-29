@@ -1,0 +1,87 @@
+:root {
+  --ink: #1f2933;
+  --muted: #5f6c7b;
+  --line: #d5dae1;
+  --bg: #ffffff;
+  --head: #f1f3f6;
+  --accent: #1d5fa8;
+  --changed-row: #ffffe0;
+  --changed-cell: #ffff00;
+  --added-row: #e2f5e2;
+  --removed-row: #fbe3e8;
+  --moved-row: #e3eefb;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--bg);
+  font-family: "Yu Gothic UI", "Meiryo UI", "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+main { padding: 0 16px 48px; }
+main.narrow { max-width: 520px; margin: 48px auto; }
+h1 { font-size: 20px; margin: 0 0 12px; }
+h2 { font-size: 15px; margin: 24px 0 8px; }
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 10px 16px 8px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar h1 { display: inline-block; margin-right: 16px; }
+.bar p { margin: 2px 0; }
+.files span { margin-right: 24px; }
+.legend { color: var(--muted); }
+.sym { display: inline-block; min-width: 1.4em; text-align: center; font-weight: 700; }
+
+.filters { margin: 6px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.filters a {
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.filters a.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.tools { margin-top: 6px; }
+button, .btn {
+  font: inherit;
+  padding: 3px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+button:disabled { border-color: var(--line); color: var(--muted); cursor: default; }
+a { color: var(--accent); }
+
+.pick { display: grid; gap: 12px; margin-bottom: 20px; }
+.pick label { display: grid; gap: 4px; }
+.sample { margin-top: 8px; }
+.err { color: #a12b2b; }
+
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--line); padding: 3px 8px; text-align: left; vertical-align: top; }
+th { background: var(--head); white-space: nowrap; }
+td.num { text-align: right; width: 3.5em; }
+td.kind { white-space: nowrap; width: 4.5em; font-weight: 700; }
+td.none { color: var(--muted); text-align: center; }
+
+tr.st-changed td { background: var(--changed-row); }
+tr.st-added td { background: var(--added-row); }
+tr.st-removed td { background: var(--removed-row); }
+tr.st-same.moved td { background: var(--moved-row); }
+tr td.chg { background: var(--changed-cell); }
+tr.current td { outline: 2px solid var(--accent); outline-offset: -2px; }
+tr[data-diff="1"] { cursor: pointer; }

@@ -1,0 +1,109 @@
+mfg-revision-diff
+Copyright (c) 2026 mfg-revision-diff contributors, MIT License (see LICENSE).
+
+This product includes or is derived from the following third-party work.
+
+1. B2MML schemas (src/main/resources/b2mml/)
+   The Business To Manufacturing Markup Language (B2MML) is used courtesy of MESA International.
+   Source: https://github.com/MESAInternational/B2MML-BatchML, commit 65cc66534343c86a1ce953561e121f906a0a0cbe
+   (file list and sha256 of every file: docs/sources.md). The files are unmodified.
+   Licence text of that commit:
+
+   Copyright 2020 MESA International, Version 0700
+   All Rights Reserved. http://www.mesa.org
+
+   This MESA International work (including specifications, documents, 
+   software, and related items) referred to as the Business To 
+   Manufacturing Markup Language (B2MML) is provided by the copyright 
+   holders under the following license. 
+
+   Permission to use, copy, modify, or redistribute this Work and its 
+   documentation, with or without modification, for any purpose and 
+   without fee or royalty is hereby granted provided MESA International 
+   is acknowledged as the originator of this Work using the 
+   following statement:
+
+   "The Business To Manufacturing Markup Language (B2MML) is used 
+   courtesy of MESA International."
+
+   In no event shall MESA International, its members, or any 
+   third party be liable for any costs, expenses, losses, damages or 
+   injuries incurred by use of the Work or as a result of this 
+   agreement.
+
+2. xmldiff (https://github.com/Shoobx/xmldiff), MIT License
+   The matching procedure in NodeMatcher.java and Differ.java follows the structure of xmldiff diff.py
+   (unique key first, then a similarity threshold F with the composite similarity of the node's own text and
+   its matched children, then the longest common subsequence to find moved nodes). Lcs.java is a port of
+   xmldiff utils.longest_common_subsequence. The mapping to line numbers is in docs/adr/0001-matching.md.
+
+   Copyright (c) 2018 Xmldiff Contributors
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+
+3. CPython difflib (https://github.com/python/cpython), Python Software Foundation License Version 2
+   QuickRatio.java is a port of difflib.SequenceMatcher.quick_ratio, and AccurateRatio.java is a port of
+   difflib.SequenceMatcher.ratio with __chain_b, find_longest_match and get_matching_blocks
+   (CPython v3.12.0, Lib/difflib.py).
+   Copyright (c) 2001-2023 Python Software Foundation; All Rights Reserved.
+   The licence text is at https://github.com/python/cpython/blob/v3.12.0/LICENSE .
+
+4. OWASP XML External Entity Prevention Cheat Sheet (https://cheatsheetseries.owasp.org/)
+   Reference for the parser settings in SecureXml.java (the Java section). No text of the cheat sheet is
+   copied; the settings are standard JAXP feature names.
+
+5. Described, not copied. The behaviour of ERPNext (GPL-3.0) pull request 60755 and the two-stage matching of
+   GumTree (LGPL-3.0) are used only as descriptions found in public issue/PR text and papers, listed in
+   docs/sources.md. No source code of those projects was copied.
+
+6. Test dependency, not distributed: JUnit 5 (Eclipse Public License 2.0).
+
+7. Libraries used at run time (not stored in this repository; Maven downloads them): Apache POI 5.5.1 (`poi-ooxml`)
+   and the 12 libraries that it needs on the compile class path, with log4j-api pinned to 2.25.5 (docs/adr/0004-excel-export-poi.md).
+   The licence of each library was read from its pom in the local Maven repository (`~/.m2/repository`, 2026-10-29).
+   Where a pom has no licence element of its own, the licence is the one of its parent pom (named in the last column).
+
+   | library | version | licence (as written in the pom) | pom that states it |
+   |---|---|---|---|
+   | org.apache.poi:poi-ooxml | 5.5.1 | Apache License, Version 2.0 | its own |
+   | org.apache.poi:poi | 5.5.1 | Apache License, Version 2.0 | its own |
+   | org.apache.poi:poi-ooxml-lite | 5.5.1 | Apache License, Version 2.0 | its own |
+   | org.apache.xmlbeans:xmlbeans | 5.3.0 | The Apache Software License, Version 2.0 | its own |
+   | commons-codec:commons-codec | 1.20.0 | Apache-2.0 | parent org.apache:apache:35 |
+   | org.apache.commons:commons-math3 | 3.6.1 | Apache License, Version 2.0 | parent org.apache:apache:16 |
+   | org.apache.commons:commons-compress | 1.28.0 | Apache-2.0 | parent org.apache:apache:35 |
+   | org.apache.commons:commons-lang3 | 3.18.0 | Apache-2.0 | parent org.apache:apache:35 |
+   | commons-io:commons-io | 2.21.0 | Apache-2.0 | parent org.apache:apache:35 |
+   | org.apache.commons:commons-collections4 | 4.5.0 | Apache-2.0 | parent org.apache:apache:33 |
+   | org.apache.logging.log4j:log4j-api | 2.25.5 | Apache-2.0 | its own |
+   | com.zaxxer:SparseBitSet | 1.3 | The Apache Software License, Version 2.0 | its own |
+   | com.github.virtuald:curvesapi | 1.08 | BSD License (http://opensource.org/licenses/BSD-3-Clause) | its own |
+
+   The Apache licence text is at https://www.apache.org/licenses/LICENSE-2.0.txt . The project's own code is MIT (LICENSE).
+
+8. aras-bom-compare (https://github.com/polyfacet/aras-bom-compare), MIT License, Copyright (c) 2023 Tomas Andersson
+   The colour convention of the output (a changed row in light yellow, a changed cell in yellow, and green and pink
+   for added and removed rows as named in that file) is taken over from its `HC_PartBomCompare_Generic.xml`
+   (docs/sources.md S11.7). No code of that project was copied.
+
+9. OWASP Cross Site Scripting Prevention Cheat Sheet, Cross-Site Request Forgery Prevention Cheat Sheet and CSV Injection
+   page (https://cheatsheetseries.owasp.org/, https://owasp.org/www-community/attacks/CSV_Injection); the Apache Log4j
+   installation manual (https://logging.apache.org/log4j/2.x/manual/installation.html). Reference for Html.java,
+   OriginGuard.java, XlsxExport.java and log4j2.component.properties. No text of these pages is copied beyond the
+   short quotes in docs/sources.md.
